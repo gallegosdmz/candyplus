@@ -8,11 +8,14 @@ class Server {
         
         // Rutas
         this.paths = {
-
+            usuarios: '/api/usuarios'
         }
 
         // Middlewares
         this.middlewares();
+
+        // Rutas de mi aplicación
+        this.routes();
     }
 
     middlewares() {
@@ -24,6 +27,10 @@ class Server {
 
         // Directorio publico
         this.app.use(express.static('public'));
+    }
+
+    routes() {
+        this.app.use(this.paths.usuarios, require('../routes/usuarios.routes'));
     }
 
     listen() {
