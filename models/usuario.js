@@ -62,7 +62,8 @@ const UsuarioSchema = Schema({
     rol: {
         type: String,
         required: true,
-        emun: ['ADMIN_ROLE', 'USER_ROLE']
+        emun: ['ADMIN_ROLE', 'USER_ROLE'],
+        default: 'USER_ROLE'
     },
 
     estado: {
@@ -75,5 +76,13 @@ const UsuarioSchema = Schema({
         default: false
     }
 });
+
+// Sacar contraseña y __v de la respuesta del POST
+UsuarioSchema.methods.toJSON = function() {
+    const {__v, password, _id, ...usuario} = this.toObject();
+    usuario.uid = _id;
+    
+    return usuario;
+}
 
 module.exports = model('Usuario', UsuarioSchema);
