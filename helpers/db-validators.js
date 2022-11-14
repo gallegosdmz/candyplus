@@ -16,16 +16,7 @@ const existeUsuarioPorId = async(id) => {
      }
 }
 
-const comparacionId = async(id) => {
-    const usuario = await Usuario.findById(id);
-
-    if (usuario.id !== id) {
-        throw new Error('No puedes editar esta información');
-    }
-}
-
 module.exports = {
     emailExiste,
-    existeUsuarioPorId,
-    comparacionId
+    existeUsuarioPorId
 }

@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { body, param } = require('express-validator');
-const { obtenerUsuarios, crearUsuario, crearAdmin, agregarDireccion } = require('../controllers/usuarios');
-const { emailExiste, existeUsuarioPorId, comparacionId } = require('../helpers/db-validators');
+const { obtenerUsuarios, crearUsuario, crearAdmin, agregarDireccion, editarUsuario, eliminarUsuario } = require('../controllers/usuarios');
+const { emailExiste, existeUsuarioPorId } = require('../helpers/db-validators');
 const { validarCampos } = require('../middlewares/validar-campos');
 
 const { validarJWT } = require('../middlewares/validar-jwt');
@@ -21,11 +21,22 @@ router.post('/', [
     validarCampos
 ], crearUsuario);
 
+router.put('/:id', [
+    validarJWT,
+    param('id', 'No es un ID válido').isMongoId(),
+    param('id').custom(existeUsuarioPorId),
+    body('nombre', 'El nombre es obligatorio').notEmpty(),
+    body('apellido', 'El apellido es obligatorio').notEmpty(),
+    body('telefono', 'El telefono es obligatorio').notEmpty(),
+    body('password', 'La contraseña debe ser de más de 6 letras').isLength({min: 6}),
+    body('correo', 'El correo no es válido').isEmail(),
+    validarCampos
+], editarUsuario);
+
 router.put('/direccion/:id', [
     validarJWT,
     param('id', 'No es un ID válido').isMongoId(),
     param('id').custom(existeUsuarioPorId),
-    param('id').custom(comparacionId),
     body('ciudad', 'La ciudad es obligatoria').notEmpty(),
     body('provincia', 'La provincia es obligatoria').notEmpty(),
     body('calle', 'La calle es obligatoria').notEmpty(),
@@ -46,5 +57,13 @@ router.put('/admin/:id', [
     validarCampos
 ], crearAdmin);
 
+
+router.delete('/:id', [
+    validarJWT,
+    esAdminRole,
+    param('id', 'No es un ID válido').isMongoId(),
+    param('id').custom(existeUsuarioPorId),
+    validarCampos
+], eliminarUsuario);
 
 module.exports = router;
