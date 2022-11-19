@@ -65,9 +65,18 @@ const actualizarCategoria = async(req = request, res = response) => {
     res.json(categoria);
 }
 
+const eliminarCategoria = async(req = request, res = response) => {
+    const {id} = req.params;
+
+    const categoria = await Categoria.findByIdAndUpdate(id, {estado: false}, {new: true});
+
+    res.json(categoria);
+}
+
 module.exports = {
     crearCategoria,
     obtenerCategorias,
     obtenerCategoria,
-    actualizarCategoria
+    actualizarCategoria,
+    eliminarCategoria
 }
